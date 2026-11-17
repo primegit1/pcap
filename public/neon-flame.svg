@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="blur"/>
+      <feComponentTransfer in="blur" result="glow">
+        <feFuncA type="linear" slope="0.35"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="shieldGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="packetGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#67e8f9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Shield outline -->
+  <path d="M50 8 L82 22 L82 52 C82 70 68 84 50 92 C32 84 18 70 18 52 L18 22 Z"
+        fill="#0f172a" stroke="url(#shieldGrad)" stroke-width="2.5" filter="url(#softGlow)"/>
+
+  <!-- Inner shield highlight -->
+  <path d="M50 14 L76 26 L76 52 C76 66 65 78 50 86 C35 78 24 66 24 52 L24 26 Z"
+        fill="none" stroke="#22d3ee" stroke-width="0.5" opacity="0.3"/>
+
+  <!-- Network packet — hexagonal body -->
+  <rect x="34" y="38" width="32" height="18" rx="2"
+        fill="#020617" stroke="#22d3ee" stroke-width="1.5" filter="url(#glow)"/>
+
+  <!-- Packet header lines -->
+  <line x1="38" y1="43" x2="52" y2="43" stroke="#22d3ee" stroke-width="1.2" opacity="0.8" filter="url(#glow)"/>
+  <line x1="38" y1="47" x2="48" y2="47" stroke="#22d3ee" stroke-width="1" opacity="0.5"/>
+  <line x1="38" y1="51" x2="44" y2="51" stroke="#22d3ee" stroke-width="0.8" opacity="0.35"/>
+
+  <!-- Magnifying glass — security scan -->
+  <circle cx="58" cy="42" r="7" fill="none" stroke="#67e8f9" stroke-width="1.8" filter="url(#glow)"/>
+  <line x1="63" y1="47" x2="68" y2="52" stroke="#67e8f9" stroke-width="1.8" stroke-linecap="round" filter="url(#glow)"/>
+
+  <!-- Check mark inside magnifier -->
+  <path d="M54 42 L57 45 L62 39" fill="none" stroke="#22d3ee" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+
+  <!-- Network nodes — bottom of shield -->
+  <circle cx="36" cy="68" r="2.5" fill="#22d3ee" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="50" cy="72" r="2.5" fill="#22d3ee" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="64" cy="68" r="2.5" fill="#22d3ee" opacity="0.7" filter="url(#glow)"/>
+
+  <!-- Network connections -->
+  <line x1="38" y1="68" x2="48" y2="72" stroke="#22d3ee" stroke-width="0.8" opacity="0.4"/>
+  <line x1="52" y1="72" x2="62" y2="68" stroke="#22d3ee" stroke-width="0.8" opacity="0.4"/>
+  <line x1="38" y1="68" x2="62" y2="68" stroke="#22d3ee" stroke-width="0.6" opacity="0.25"/>
+
+  <!-- Data stream dots — top of shield -->
+  <circle cx="42" cy="22" r="1" fill="#22d3ee" opacity="0.5"/>
+  <circle cx="46" cy="24" r="1.2" fill="#22d3ee" opacity="0.6"/>
+  <circle cx="50" cy="22" r="1" fill="#22d3ee" opacity="0.7"/>
+  <circle cx="54" cy="24" r="1.2" fill="#22d3ee" opacity="0.6"/>
+  <circle cx="58" cy="22" r="1" fill="#22d3ee" opacity="0.5"/>
+</svg>

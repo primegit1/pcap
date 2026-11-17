@@ -1,0 +1,248 @@
+@import "tailwindcss";
+
+@theme {
+  /* Font */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* Glassmorphism background */
+  --color-bg-primary: #020617;    /* slate-950 - deep base */
+  --color-bg-secondary: #080f1a;    /* deep blue-slate */
+  --color-bg-tertiary: #0f172a;   /* slate-900 */
+  --color-bg-glass: rgba(255, 255, 255, 0.04);  /* frosted glass */
+  --color-bg-glass-strong: rgba(255, 255, 255, 0.08);  /* stronger glass */
+  --color-bg-glass-elevated: rgba(255, 255, 255, 0.12);  /* elevated glass */
+
+  /* Glass borders */
+  --color-border: rgba(255, 255, 255, 0.12);     /* glass border */
+  --color-border-strong: rgba(255, 255, 255, 0.24); /* strong glass border */
+  --color-border-focus: rgba(34, 211, 238, 0.4);   /* focus ring */
+
+  /* Text colors */
+  --color-text-primary: #f8fafc;  /* slate-50 */
+  --color-text-secondary: #94a3b8;/* slate-400 */
+  --color-text-muted: #64748b;    /* slate-500 */
+  --color-text-subtle: #cbd5e1;   /* slate-300 */
+
+  /* Authority/AI theme colors - Deep Trust Palette */
+  --color-authority-primary: #0ea5e9;  /* cyan-500 - trusted authority */
+  --color-authority-secondary: #0284c7; /* cyan-600 - deeper trust */
+  --color-authority-accent: #8b5cf6;   /* violet-500 - intelligence */
+  --color-authority-accent-dim: #7c3aed; /* violet-600 */
+  --color-authority-glow: rgba(14, 165, 233, 0.3);  /* cyan glow */
+
+  /* Severity colors - enhanced for Authority theme */
+  --color-severity-critical: #ef4444;  /* red-500 */
+  --color-severity-high: #f97316;      /* orange-500 */
+  --color-severity-medium: #eab308;    /* yellow-500 */
+  --color-severity-low: #60a5fa;       /* blue-400 */
+  --color-severity-info: #94a3b8;      /* slate-400 */
+
+  /* Success/positive for trust indicators */
+  --color-success: #22c55e;  /* emerald-500 - verification success */
+  --color-success-glow: rgba(34, 197, 94, 0.3);
+  --color-warning: #f59e0b;  /* amber-500 */
+  --color-warning-glow: rgba(245, 158, 11, 0.3);
+
+  /* Gradients for glassmorphism */
+  --color-gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+  --color-gradient-cyan: linear-gradient(90deg, #0ea5e9 0%, #7c3aed 100%);
+  --color-gradient-authority: linear-gradient(90deg, #0ea5e9 0%, #0284c7 50%, #7c3aed 100%);
+}
+
+/* Base styles */
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #020617 0%, #080f1a 50%, #0f172a 100%);
+  color: #e2e8f0;
+  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* Glassmorphism utilities */
+.glass {
+  background: var(--color-bg-glass);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  border: 1px solid var(--color-border);
+}
+
+.glass-strong {
+  background: var(--color-bg-glass-strong);
+  backdrop-filter: blur(16px) saturate(1.5);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  border: 1px solid var(--color-border-strong);
+}
+
+.glass-elevated {
+  background: var(--color-bg-glass-elevated);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 8px 32px rgba(2, 6, 23, 0.6), 0 4px 16px rgba(14, 165, 233, 0.1);
+}
+
+/* Authority glow effects */
+.glow-authority {
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.25), 0 0 40px rgba(14, 165, 233, 0.1);
+}
+
+.glow-success {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.25), 0 0 40px rgba(34, 197, 94, 0.1);
+}
+
+.glow-warning {
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.25), 0 0 40px rgba(245, 158, 11, 0.1);
+}
+
+.glow-danger {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.25), 0 0 40px rgba(239, 68, 68, 0.1);
+}
+
+/* Gradient text */
+.text-gradient {
+  background: var(--color-gradient-cyan);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-repeat: no-repeat;
+}
+
+/* Scrollbar styling - glass-like */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+/* Selection color - authority theme */
+::selection {
+  background-color: rgba(14, 165, 233, 0.25);
+  color: #f8fafc;
+}
+
+/* Gradient background for sections */
+.bg-gradient-authority {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%);
+}
+
+/* Glass transition for interactive elements */
+.transition-glass {
+  transition: all 0.3s ease;
+}
+
+/* Focus rings - authority style */
+:focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+/* Custom focus for inputs */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+}
+
+/* Button glow effect on hover */
+.btn-glow:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 32px rgba(14, 165, 233, 0.2);
+}
+
+/* Glass border utility classes */
+.glass-border {
+  border: 1px solid var(--color-border);
+}
+
+.glass-border-strong {
+  border: 1px solid var(--color-border-strong);
+}
+
+.glass-border-glow {
+  border: 1px solid rgba(14, 165, 233, 0.4);
+}
+
+/* Glow class for buttons */
+.glow-authority-button {
+  box-shadow: 0 4px 20px rgba(14, 165, 233, 0.2);
+}
+
+/* Print styles for PDF export */
+@media print {
+  /* Hide interactive elements */
+  .no-print, .print-hide {
+    display: none !important;
+  }
+
+  /* Force white background for print */
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Remove glass effects for print */
+  .glass, .glass-strong, .glass-elevated {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Hide glows and animations */
+  .glow-authority, .glow-success, .glow-warning, .glow-danger {
+    box-shadow: none !important;
+  }
+
+  /* Force visibility of content */
+  .bg-slate-900, .bg-slate-800, .bg-slate-700 {
+    background: #ffffff !important;
+  }
+
+  .text-white {
+    color: #0f172a !important;
+  }
+
+  .text-slate-300, .text-slate-400, .text-slate-500 {
+    color: #334155 !important;
+  }
+
+  .border-slate-800 {
+    border-color: #cbd5e1 !important;
+  }
+
+  .border-cyan-500, .border-orange-500, .border-red-500, .border-yellow-500, .border-blue-500 {
+    border-color: #94a3b8 !important;
+  }
+
+  /* Ensure content is visible */
+  * {
+    opacity: 1 !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Force blocks to be visible */
+  .space-y-6 > *:not(:empty) {
+    display: block !important;
+  }
+
+  /* Page size and margins */
+  @page {
+    size: letter portrait;
+    margin: 0.5in;
+  }
+}
