@@ -136,3 +136,66 @@ function decodeASCII(payload: ArrayBuffer): string {
     .map((b) => (b >= 32 && b <= 126 ? String.fromCharCode(b) : " "))
     .join("");
 }
+
+/**
+ * Detect POP3 cleartext authentication — POP3 on port 110 transmits
+ * usernames (USER command) and passwords (PASS command) in plaintext.
+ */
+export function detectPOP3Cleartext(packets: Packet[]): SecurityFinding[] {
+  const findings: SecurityFinding[] = [];
+  const pop3Servers = new Map<string, { count: number; hasAuth: boolean; hasTLS: boolean }>();
+
+  for (const pkt of packets) {
+    if (pkt.protocol !== Protocol.POP3) continue;
+    if (!pkt.ip) continue;
+
+    const serverIp = pkt.ip.dstIp;
+    const entry = pop3Servers.get(serverIp) || { count: 0, hasAuth: false, hasTLS: false };
+    entry.count++;
+
+    if (pkt.appPayload && pkt.appPayload.byteLength >= 4) {
+      const bytes = new Uint8Array(pkt.appPayload);
+      const text = Array.from(bytes).map((b) => (b >= 32 && b <= 126 ? String.fromCharCode(b) : " ")).join("");
+
+      if (/^(USER|PASS)\s+/i.test(text)) {
+        entry.hasAuth = true;
+        findings.push({
+          id: nextId(),
+          title: "POP3 Cleartext Credentials Detected",
+          severity: Severity.High,
+          description: `POP3 USER/PASS command detected from ${pkt.ip.srcIp} to ${serverIp}. POP3 on port 110 transmits usernames and passwords in complete plaintext — no encoding whatsoever. An attacker capturing this traffic can read the credentials directly without any decoding step.`,
+          recommendation: `1. Migrate to POP3S (port 995) with TLS encryption immediately.\n2. Alternatively, enforce STARTTLS before allowing USER/PASS commands.\n3. Consider migrating from POP3 to IMAPS (port 993) for better server-side features.\n4. Rotate the exposed credentials immediately.\n5. Audit the mail server to disable plaintext POP3 (port 110).`,
+          evidence: `Command: ${text.slice(0, 40).trim()}, server: ${serverIp}`,
+          affectedIp: serverIp,
+          category: FindingCategory.Email,
+          timestamp: 0,
+        });
+      }
+
+      if (/^STLS/i.test(text)) {
+        entry.hasTLS = true;
+      }
+    }
+
+    pop3Servers.set(serverIp, entry);
+  }
+
+  // Also flag POP3 servers that never upgraded to TLS
+  for (const [ip, data] of pop3Servers) {
+    if (!data.hasTLS && data.count >= 3) {
+      findings.push({
+        id: nextId(),
+        title: "POP3 Without TLS — Email Credentials Exposed",
+        severity: Severity.Medium,
+        description: `POP3 traffic to ${ip} (${data.count} packets) with no STLS (STARTTLS) upgrade detected. Without encryption, all email retrieval activity including credentials and message content is visible to network eavesdroppers.`,
+        recommendation: `1. Enable STLS (STARTTLS) support on the POP3 server.\n2. Prefer POP3S (port 995) over port 110 with STARTTLS.\n3. Disable plaintext POP3 on the server if all clients support TLS.`,
+        evidence: `Server: ${ip}, packets: ${data.count}, STLS: not detected`,
+        affectedIp: ip,
+        category: FindingCategory.Email,
+        timestamp: 0,
+      });
+    }
+  }
+
+  return findings;
+}

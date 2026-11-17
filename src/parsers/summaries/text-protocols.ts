@@ -497,3 +497,64 @@ export function summarizeRTSP(payload: ArrayBuffer): string {
 
   return "RTSP";
 }
+
+
+/**
+ * Summarize POP3 commands/replies.
+ */
+export function summarizePOP3(payload: ArrayBuffer): string {
+  const text = firstLineAsText(payload, 200);
+  if (!text) return "";
+  const upper = text.toUpperCase().trim();
+  if (upper.startsWith("USER ")) return `USER ${text.slice(5, 30).trim()}`;
+  if (upper.startsWith("PASS ")) return "PASS ****";
+  if (upper.startsWith("STAT")) return "STAT (Mailbox status)";
+  if (upper.startsWith("LIST")) return "LIST (Message list)";
+  if (upper.startsWith("RETR")) return `RETR ${text.slice(5, 20).trim()}`;
+  if (upper.startsWith("DELE")) return `DELE ${text.slice(5, 20).trim()}`;
+  if (upper.startsWith("QUIT")) return "QUIT (Logout)";
+  if (upper.startsWith("STLS")) return "STLS (Upgrade to TLS)";
+  if (upper.startsWith("CAPA")) return "CAPA (Capabilities)";
+  if (upper.startsWith("+OK")) return `OK: ${text.slice(3, 60).trim()}`;
+  if (upper.startsWith("-ERR")) return `ERR: ${text.slice(4, 60).trim()}`;
+  return text.slice(0, 60).trim();
+}
+
+/**
+ * Summarize IRC messages.
+ */
+export function summarizeIRC(payload: ArrayBuffer): string {
+  const text = firstLineAsText(payload, 300);
+  if (!text) return "";
+  const upper = text.toUpperCase().trim();
+  if (upper.startsWith("NICK ")) return `NICK ${text.slice(5, 30).trim()}`;
+  if (upper.startsWith("JOIN ")) return `JOIN ${text.slice(5, 50).trim()}`;
+  if (upper.startsWith("PRIVMSG ")) return `PRIVMSG ${text.slice(8, 60).trim()}`;
+  if (upper.startsWith("USER ")) return `USER ${text.slice(5, 50).trim()}`;
+  if (upper.startsWith("PASS ")) return "PASS ****";
+  if (upper.startsWith("PART ")) return `PART ${text.slice(5, 40).trim()}`;
+  if (upper.startsWith("QUIT")) return `QUIT ${text.slice(5, 40).trim()}`;
+  if (upper.startsWith("MODE ")) return `MODE ${text.slice(5, 50).trim()}`;
+  if (upper.startsWith("PING ")) return `PING ${text.slice(5, 30).trim()}`;
+  if (upper.startsWith("PONG ")) return `PONG ${text.slice(5, 30).trim()}`;
+  if (upper.startsWith(":")) return text.slice(0, 80).trim();
+  return text.slice(0, 60).trim();
+}
+
+/**
+ * Summarize XMPP XML streams.
+ */
+export function summarizeXMPP(payload: ArrayBuffer): string {
+  const text = firstLineAsText(payload, 400);
+  if (!text) return "";
+  if (text.includes("<stream:stream")) return "Stream: XMPP session open";
+  if (text.includes("</stream:stream")) return "Stream: XMPP session close";
+  if (text.includes("<starttls")) return "STARTTLS: TLS upgrade request";
+  if (text.includes("<proceed")) return "STARTTLS: Proceed with TLS";
+  if (text.includes("<auth ")) return "SASL: Authentication";
+  if (text.includes("<message ")) return `Message: ${text.slice(text.indexOf(">") + 1, text.indexOf(">") + 60).trim()}`;
+  if (text.includes("<presence")) return "Presence update";
+  if (text.includes("<iq ")) return "IQ stanza (query/response)";
+  if (text.includes("<failure")) return "SASL: Authentication failure";
+  return text.slice(0, 60).trim();
+}

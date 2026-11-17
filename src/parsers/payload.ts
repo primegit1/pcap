@@ -1,8 +1,8 @@
 import { Protocol } from "../types/packets";
 import { summarizeSSDP } from "./ssdp";
-import { summarizeFTP, summarizeHTTP, summarizeIMAP, summarizeRDP, summarizeRTSP, summarizeSIP, summarizeSMTP, summarizeSSH, summarizeTelnet } from "./summaries/text-protocols";
+import { summarizeFTP, summarizeHTTP, summarizeIMAP, summarizeIRC, summarizePOP3, summarizeRDP, summarizeRTSP, summarizeSIP, summarizeSMTP, summarizeSSH, summarizeTelnet, summarizeXMPP } from "./summaries/text-protocols";
 import { summarizeIPSecIKE, summarizeOpenVPN, summarizeQUIC, summarizeTLS, summarizeWireGuard } from "./summaries/secure-transport";
-import { summarizeBGP, summarizeDHCP, summarizeDHCPv6Payload, summarizeDNS, summarizeIGMP, summarizeKerberos, summarizeLDAP, summarizeNTP, summarizeNetBIOS, summarizeSMB, summarizeSNMP, summarizeSyslog } from "./summaries/network-services";
+import { summarizeBGP, summarizeDHCP, summarizeDHCPv6Payload, summarizeDNS, summarizeIGMP, summarizeKerberos, summarizeLDAP, summarizeNetBIOS, summarizeNTP, summarizeRIP, summarizeSMB, summarizeSNMP, summarizeSTUN, summarizeSyslog } from "./summaries/network-services";
 import { summarizeBACnet, summarizeDNP3, summarizeEtherNetIP, summarizeIEC104, summarizeModbus, summarizeOPCDA, summarizeOPCUA, summarizeProfinet, summarizeS7 } from "./summaries/industrial";
 import { summarizeAMQP, summarizeMQTT, summarizeMSSQL, summarizeMemcached, summarizeMongoDB, summarizeMySQL, summarizeOracleTNS, summarizePostgreSQL, summarizeRedis } from "./summaries/databases-messaging";
 import { summarizeRaw } from "./summaries/shared";
@@ -110,6 +110,44 @@ export function summarizePayload(protocol: Protocol, payload: ArrayBuffer | null
       return summarizeOpenVPN(payload);
     case Protocol.QUIC:
       return summarizeQUIC(payload);
+    case Protocol.POP3:
+      return summarizePOP3(payload);
+    case Protocol.IRC:
+      return summarizeIRC(payload);
+    case Protocol.XMPP:
+      return summarizeXMPP(payload);
+    case Protocol.RIP:
+      return summarizeRIP(payload);
+    case Protocol.STUN:
+      return summarizeSTUN(payload);
+    case Protocol.Kafka:
+      return `Kafka: ${payload.byteLength} bytes`;
+    case Protocol.Etcd:
+      return `etcd: ${payload.byteLength} bytes`;
+    case Protocol.ZooKeeper:
+      return `ZooKeeper: ${payload.byteLength} bytes`;
+    case Protocol.Consul:
+      return `Consul: ${payload.byteLength} bytes`;
+    case Protocol.DCERPC:
+      return `DCE/RPC: ${payload.byteLength} bytes`;
+    case Protocol.GeSRTP:
+      return `GE SRTP: ${payload.byteLength} bytes`;
+    case Protocol.NiagaraFox:
+      return `Niagara Fox: ${payload.byteLength} bytes`;
+    case Protocol.HARTIP:
+      return `HART-IP: ${payload.byteLength} bytes`;
+    case Protocol.VXLAN:
+      return `VXLAN: ${payload.byteLength} bytes`;
+    case Protocol.GRE:
+      return `GRE: ${payload.byteLength} bytes`;
+    case Protocol.HSRP:
+      return `HSRP: ${payload.byteLength} bytes`;
+    case Protocol.OSPF:
+      return `OSPF: ${payload.byteLength} bytes`;
+    case Protocol.EIGRP:
+      return `EIGRP: ${payload.byteLength} bytes`;
+    case Protocol.VRRP:
+      return `VRRP: ${payload.byteLength} bytes`;
     default:
       return summarizeRaw(payload);
   }

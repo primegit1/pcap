@@ -153,6 +153,7 @@ export const Protocol = {
   // Email
   SMTP: "SMTP",
   IMAP: "IMAP",
+  POP3: "POP3",
   // Directory / Auth
   LDAP: "LDAP",
   Kerberos: "Kerberos",
@@ -182,6 +183,12 @@ export const Protocol = {
   mDNS: "mDNS",
   TFTP: "TFTP",
   BGP: "BGP",
+  // Routing
+  OSPF: "OSPF",
+  EIGRP: "EIGRP",
+  RIP: "RIP",
+  VRRP: "VRRP",
+  HSRP: "HSRP",
   // Remote access / VPN
   RDP: "RDP",
   VNC: "VNC",
@@ -189,14 +196,26 @@ export const Protocol = {
   WireGuard: "WireGuard",
   IPSecIKE: "IPSec/IKE",
   SSDP: "SSDP",
+  // Tunneling
+  GRE: "GRE",
+  VXLAN: "VXLAN",
   // Container / Orchestration
   Docker: "Docker",
   Kubernetes: "Kubernetes",
+  // Cloud-native / Data stores
+  Kafka: "Kafka",
+  ZooKeeper: "ZooKeeper",
+  Etcd: "etcd",
+  Consul: "Consul",
   // IoT / Messaging
   MQTT: "MQTT",
   CoAP: "CoAP",
   AMQP: "AMQP",
   RTSP: "RTSP",
+  // Communication / C2
+  IRC: "IRC",
+  XMPP: "XMPP",
+  STUN: "STUN",
   // VoIP
   SIP: "SIP",
   // QUIC (detected via UDP/443 heuristic, not port map)
@@ -211,11 +230,17 @@ export const Protocol = {
   IEC104: "IEC 60870-5-104",
   BACnet: "BACnet",
   Profinet: "Profinet",
+  // OT/ICS extras
+  GeSRTP: "GE SRTP",
+  NiagaraFox: "Niagara Fox",
+  HARTIP: "HART-IP",
   // Network layer
   ICMP: "ICMP",
   IGMP: "IGMP",
   ARP: "ARP",
   NetBIOS: "NetBIOS",
+  // Windows
+  DCERPC: "DCE/RPC",
 } as const;
 export type Protocol = (typeof Protocol)[keyof typeof Protocol];
 
@@ -230,6 +255,7 @@ export function isClearTextProtocol(protocol: Protocol): boolean {
     Protocol.SMTP,
     Protocol.SSH,
     Protocol.IMAP,
+    Protocol.POP3,
     Protocol.LDAP,
     Protocol.Redis,
     Protocol.MySQL,
@@ -237,6 +263,8 @@ export function isClearTextProtocol(protocol: Protocol): boolean {
     Protocol.VNC,
     Protocol.TFTP,
     Protocol.SIP,
+    Protocol.IRC,
+    Protocol.XMPP,
   ] as readonly Protocol[]).includes(protocol);
 }
 
@@ -254,6 +282,9 @@ export function isOTProtocol(protocol: Protocol): boolean {
     Protocol.IEC104,
     Protocol.BACnet,
     Protocol.Profinet,
+    Protocol.GeSRTP,
+    Protocol.NiagaraFox,
+    Protocol.HARTIP,
   ] as readonly Protocol[]).includes(protocol);
 }
 

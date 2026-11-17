@@ -1,4 +1,4 @@
-import type { Packet } from "../types/packets";
+import { Protocol, type Packet } from "../types/packets";
 import type { FlowRecord, SecurityFinding, AnalysisResult, AnalysisSummary } from "../types/analysis";
 import {
   detectPortScanning,
@@ -92,7 +92,29 @@ import {
 import {
   detectSMTPCleartext,
   detectSMTPOpenRelay,
+  detectPOP3Cleartext,
 } from "./security-rules/email";
+import {
+  detectEtcdExposure,
+  detectKafkaExposure,
+  detectZooKeeperExposure,
+  detectConsulExposure,
+  detectIRCTraffic,
+  detectXMPPCleartext,
+  detectSTUNTraffic,
+  detectDCERPCExposure,
+  detectGeSRTPTraffic,
+  detectNiagaraFoxTraffic,
+  detectHARTIPTraffic,
+  detectVXLANTraffic,
+} from "./security-rules/cloud-native";
+import {
+  detectRIPTraffic,
+  detectHSRPTraffic,
+  detectOSPFTraffic,
+  detectEIGRPTraffic,
+  detectGRETraffic,
+} from "./security-rules/routing-protocols";
 import {
   detectMySQLCleartextAuth,
   detectPostgreSQLCleartextAuth,
@@ -247,6 +269,7 @@ export function runAllRules(
     // ── Email protocols ──
     ["SMTP cleartext", detectSMTPCleartext],
     ["SMTP open relay", detectSMTPOpenRelay],
+    ["POP3 cleartext", detectPOP3Cleartext, (i) => i.byProtocol.get(Protocol.POP3) ?? []],
     // ── Database protocols ──
     ["MySQL cleartext auth", detectMySQLCleartextAuth],
     ["PostgreSQL cleartext auth", detectPostgreSQLCleartextAuth],
@@ -286,6 +309,28 @@ export function runAllRules(
     // ── Infrastructure security ──
     ["Oracle DB cleartext auth", detectOracleDBCleartextAuth],
     ["NetBIOS spoofing", detectNetBIOSSpoofing],
+    // ── Cloud-native & Data Stores ──
+    ["etcd exposure", detectEtcdExposure, (i) => i.byProtocol.get(Protocol.Etcd) ?? []],
+    ["Kafka exposure", detectKafkaExposure, (i) => i.byProtocol.get(Protocol.Kafka) ?? []],
+    ["ZooKeeper exposure", detectZooKeeperExposure, (i) => i.byProtocol.get(Protocol.ZooKeeper) ?? []],
+    ["Consul exposure", detectConsulExposure, (i) => i.byProtocol.get(Protocol.Consul) ?? []],
+    // ── Communication & C2 ──
+    ["IRC traffic", detectIRCTraffic, (i) => i.byProtocol.get(Protocol.IRC) ?? []],
+    ["XMPP cleartext", detectXMPPCleartext, (i) => i.byProtocol.get(Protocol.XMPP) ?? []],
+    ["STUN traffic", detectSTUNTraffic, (i) => i.byProtocol.get(Protocol.STUN) ?? []],
+    // ── Windows & Overlay Tunnels ──
+    ["DCE/RPC exposure", detectDCERPCExposure, (i) => i.byProtocol.get(Protocol.DCERPC) ?? []],
+    ["VXLAN traffic", detectVXLANTraffic, (i) => i.byProtocol.get(Protocol.VXLAN) ?? []],
+    // ── OT / ICS extras ──
+    ["GE SRTP traffic", detectGeSRTPTraffic, (i) => i.byProtocol.get(Protocol.GeSRTP) ?? []],
+    ["Niagara Fox traffic", detectNiagaraFoxTraffic, (i) => i.byProtocol.get(Protocol.NiagaraFox) ?? []],
+    ["HART-IP traffic", detectHARTIPTraffic, (i) => i.byProtocol.get(Protocol.HARTIP) ?? []],
+    // ── Routing protocols ──
+    ["RIP traffic", detectRIPTraffic, (i) => i.byProtocol.get(Protocol.RIP) ?? []],
+    ["HSRP traffic", detectHSRPTraffic, (i) => i.byProtocol.get(Protocol.HSRP) ?? []],
+    ["OSPF traffic", detectOSPFTraffic, (i) => i.byProtocol.get(Protocol.OSPF) ?? []],
+    ["EIGRP traffic", detectEIGRPTraffic, (i) => i.byProtocol.get(Protocol.EIGRP) ?? []],
+    ["GRE traffic", detectGRETraffic, (i) => i.byProtocol.get(Protocol.GRE) ?? []],
   ];
 
   const flowRuleFns: [string, (f: FlowRecord[]) => SecurityFinding[]][] = [

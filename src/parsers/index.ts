@@ -124,6 +124,34 @@ export function parsePacket(
             info += ` → ${igmp.groupAddress}`;
           }
         }
+      } else if (ip.protocol === 47) {
+        protocol = Protocol.GRE;
+        if (ip.payloadLen > 0) {
+          appPayload = pktBody.slice(ip.payloadOffset, ip.payloadOffset + ip.payloadLen);
+        }
+        info = `GRE Encapsulated Tunnel`;
+        appPayloadSummary = summarizePayload(protocol, appPayload);
+      } else if (ip.protocol === 89) {
+        protocol = Protocol.OSPF;
+        if (ip.payloadLen > 0) {
+          appPayload = pktBody.slice(ip.payloadOffset, ip.payloadOffset + ip.payloadLen);
+        }
+        info = `OSPF Routing`;
+        appPayloadSummary = summarizePayload(protocol, appPayload);
+      } else if (ip.protocol === 88) {
+        protocol = Protocol.EIGRP;
+        if (ip.payloadLen > 0) {
+          appPayload = pktBody.slice(ip.payloadOffset, ip.payloadOffset + ip.payloadLen);
+        }
+        info = `EIGRP Routing`;
+        appPayloadSummary = summarizePayload(protocol, appPayload);
+      } else if (ip.protocol === 112) {
+        protocol = Protocol.VRRP;
+        if (ip.payloadLen > 0) {
+          appPayload = pktBody.slice(ip.payloadOffset, ip.payloadOffset + ip.payloadLen);
+        }
+        info = `VRRP Redundancy`;
+        appPayloadSummary = summarizePayload(protocol, appPayload);
       }
 
       if (!info) {

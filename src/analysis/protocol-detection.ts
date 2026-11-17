@@ -45,9 +45,13 @@ export function isOTProtocol(protocol: Protocol): boolean {
     Protocol.DNP3,
     Protocol.S7Comm,
     Protocol.EtherNetIP,
+    Protocol.OPCDA,
     Protocol.OPCUA,
     Protocol.IEC104,
     Protocol.BACnet,
     Protocol.Profinet,
+    Protocol.GeSRTP,
+    Protocol.NiagaraFox,
+    Protocol.HARTIP,
   ] as readonly Protocol[]).includes(protocol);
 }

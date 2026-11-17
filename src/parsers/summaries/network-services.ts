@@ -690,3 +690,36 @@ export function summarizeDHCPv6Payload(payload: ArrayBuffer): string {
 
   return `${typeName} TXID=${txId}`;
 }
+
+
+/**
+ * Summarize STUN messages — decode message type from first 2 bytes.
+ */
+export function summarizeSTUN(payload: ArrayBuffer): string {
+  if (payload.byteLength < 4) return "STUN packet";
+  const view = new Uint8Array(payload);
+  const msgType = (view[0] << 8) | view[1];
+  const typeMap: Record<number, string> = {
+    0x0001: "Binding Request",
+    0x0101: "Binding Success Response",
+    0x0111: "Binding Error Response",
+    0x0003: "Allocate Request",
+    0x0103: "Allocate Success",
+    0x0004: "Refresh Request",
+    0x0104: "Refresh Success",
+  };
+  return `STUN: ${typeMap[msgType] || `Type=0x${msgType.toString(16).padStart(4, "0")}`}`;
+}
+
+/**
+ * Summarize RIP messages.
+ */
+export function summarizeRIP(payload: ArrayBuffer): string {
+  if (payload.byteLength < 4) return "RIP packet";
+  const view = new Uint8Array(payload);
+  const command = view[0]; // 1=Request, 2=Response
+  const version = view[1]; // 1=RIPv1, 2=RIPv2
+  const cmdName = command === 1 ? "Request" : command === 2 ? "Response" : `Cmd=${command}`;
+  const entryCount = Math.floor((payload.byteLength - 4) / 20);
+  return `RIPv${version} ${cmdName}: ${entryCount} route entries`;
+}
