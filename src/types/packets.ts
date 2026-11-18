@@ -234,6 +234,7 @@ export const Protocol = {
   GeSRTP: "GE SRTP",
   NiagaraFox: "Niagara Fox",
   HARTIP: "HART-IP",
+  FFLR: "FF-LR (Fieldbus LAN Redundancy)",
   // Network layer
   ICMP: "ICMP",
   IGMP: "IGMP",
@@ -285,6 +286,7 @@ export function isOTProtocol(protocol: Protocol): boolean {
     Protocol.GeSRTP,
     Protocol.NiagaraFox,
     Protocol.HARTIP,
+    Protocol.FFLR,
   ] as readonly Protocol[]).includes(protocol);
 }
 

@@ -129,4 +129,17 @@ describe("new protocol detection & security rules", () => {
     expect(greFinding).toBeDefined();
     expect(greFinding?.affectedIp).toBe("10.0.0.5");
   });
+
+  it("detects FOUNDATION Fieldbus LAN Redundancy (FF-LR) traffic on port 3622", () => {
+    const fflrPayload = new Uint8Array([0x01, 0x00, 0x04, 0x00]); // Heartbeat
+    const frames: Frame[] = [
+      { t: T0, d: udpFrame(S, [10, 0, 0, 10], 3622, 3622, fflrPayload) },
+    ];
+    const res = analyze(makePcap(frames));
+    expect(res.packets[0].protocol).toBe(Protocol.FFLR);
+    const fflrFinding = res.findings.find((f) => f.title.includes("FF-LR"));
+    expect(fflrFinding).toBeDefined();
+    expect(fflrFinding?.severity).toBe("High");
+    expect(fflrFinding?.affectedIp).toBe("10.0.0.9");
+  });
 });

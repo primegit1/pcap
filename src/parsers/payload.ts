@@ -3,7 +3,7 @@ import { summarizeSSDP } from "./ssdp";
 import { summarizeFTP, summarizeHTTP, summarizeIMAP, summarizeIRC, summarizePOP3, summarizeRDP, summarizeRTSP, summarizeSIP, summarizeSMTP, summarizeSSH, summarizeTelnet, summarizeXMPP } from "./summaries/text-protocols";
 import { summarizeIPSecIKE, summarizeOpenVPN, summarizeQUIC, summarizeTLS, summarizeWireGuard } from "./summaries/secure-transport";
 import { summarizeBGP, summarizeDHCP, summarizeDHCPv6Payload, summarizeDNS, summarizeIGMP, summarizeKerberos, summarizeLDAP, summarizeNetBIOS, summarizeNTP, summarizeRIP, summarizeSMB, summarizeSNMP, summarizeSTUN, summarizeSyslog } from "./summaries/network-services";
-import { summarizeBACnet, summarizeDNP3, summarizeEtherNetIP, summarizeIEC104, summarizeModbus, summarizeOPCDA, summarizeOPCUA, summarizeProfinet, summarizeS7 } from "./summaries/industrial";
+import { summarizeBACnet, summarizeDNP3, summarizeEtherNetIP, summarizeFFLR, summarizeIEC104, summarizeModbus, summarizeOPCDA, summarizeOPCUA, summarizeProfinet, summarizeS7 } from "./summaries/industrial";
 import { summarizeAMQP, summarizeMQTT, summarizeMSSQL, summarizeMemcached, summarizeMongoDB, summarizeMySQL, summarizeOracleTNS, summarizePostgreSQL, summarizeRedis } from "./summaries/databases-messaging";
 import { summarizeRaw } from "./summaries/shared";
 
@@ -136,6 +136,8 @@ export function summarizePayload(protocol: Protocol, payload: ArrayBuffer | null
       return `Niagara Fox: ${payload.byteLength} bytes`;
     case Protocol.HARTIP:
       return `HART-IP: ${payload.byteLength} bytes`;
+    case Protocol.FFLR:
+      return summarizeFFLR(payload);
     case Protocol.VXLAN:
       return `VXLAN: ${payload.byteLength} bytes`;
     case Protocol.GRE:

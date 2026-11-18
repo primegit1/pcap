@@ -53,5 +53,6 @@ export function isOTProtocol(protocol: Protocol): boolean {
     Protocol.GeSRTP,
     Protocol.NiagaraFox,
     Protocol.HARTIP,
+    Protocol.FFLR,
   ] as readonly Protocol[]).includes(protocol);
 }

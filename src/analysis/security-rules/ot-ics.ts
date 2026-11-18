@@ -1,4 +1,4 @@
-import { Protocol } from "../../types/packets";
+import { Protocol, type Packet } from "../../types/packets";
 import type { SecurityFinding, FlowRecord } from "../../types/analysis";
 import { Severity, FindingCategory } from "../../types/analysis";
 
@@ -25,6 +25,7 @@ export function detectPLCCommunication(
     Protocol.Profinet,
     Protocol.OPCDA,
     Protocol.OPCUA,
+    Protocol.FFLR,
   ]);
 
   for (const flow of flows) {
@@ -237,6 +238,7 @@ export function detectOTOverInternet(flows: FlowRecord[]): SecurityFinding[] {
     Protocol.IEC104,
     Protocol.BACnet,
     Protocol.Profinet,
+    Protocol.FFLR,
   ]);
 
   function isPublicIp(ip: string): boolean {
@@ -272,6 +274,50 @@ export function detectOTOverInternet(flows: FlowRecord[]): SecurityFinding[] {
       affectedIp: flow.dstIp,
       category: FindingCategory.OTICS,
       timestamp: 0, // replaced with capture time by runAllRules
+    });
+  }
+
+  return findings;
+}
+
+/**
+ * Detect FOUNDATION Fieldbus LAN Redundancy (FF-LR) traffic on port 3622.
+ * FF-LR coordinates redundancy and failover heartbeats across High Speed Ethernet (HSE)
+ * field networks. Because it lacks cryptographic authentication, tampering or unauthorized
+ * packets can trigger spurious failovers or split-brain conditions in safety/control systems.
+ */
+export function detectFFLRExposure(packets: Packet[]): SecurityFinding[] {
+  const findings: SecurityFinding[] = [];
+  const fflrNodes = new Map<string, { count: number; destinations: Set<string> }>();
+
+  for (const pkt of packets) {
+    if (pkt.protocol !== Protocol.FFLR) continue;
+    if (!pkt.ip) continue;
+
+    const src = pkt.ip.srcIp;
+    const dst = pkt.ip.dstIp;
+    const entry = fflrNodes.get(src) || { count: 0, destinations: new Set() };
+    entry.count++;
+    entry.destinations.add(dst);
+    fflrNodes.set(src, entry);
+  }
+
+  for (const [srcIp, data] of fflrNodes) {
+    const dstList = Array.from(data.destinations).join(", ");
+    findings.push({
+      id: nextId(),
+      title: "FOUNDATION Fieldbus LAN Redundancy (FF-LR) Traffic Detected",
+      severity: Severity.High,
+      description: `FOUNDATION Fieldbus LAN Redundancy (FF-LR) traffic detected from ${srcIp} to [${dstList}] (${data.count} packets) on port 3622. FF-LR is part of the Fieldbus Foundation High Speed Ethernet (HSE) standard used in industrial process control (refineries, power, chemical plants) to maintain redundant communications between linking devices and DCS controllers. FF-LR heartbeats and failover signals typically lack authentication. An adversary on the local network could spoof failover packets, force master/backup flapping, or cause split-brain states in safety and control loops. Furthermore, FF-LR should strictly remain within Purdue Model Level 1/2 control networks.`,
+      recommendation: `1. Ensure FF-LR traffic is confined strictly to dedicated industrial control LANs (Purdue Level 1/2) with no routing to IT networks or the internet.
+2. Deploy managed industrial switches with port security / MAC-binding to prevent rogue devices from sending HSE/FF-LR packets.
+3. Monitor port 3622 traffic baseline for unexpected nodes or abrupt rate increases.
+4. Verify physical isolation and VLAN segmentation for redundant HSE network channels (LAN A and LAN B).
+5. Ensure industrial firewalls block port 3622 across perimeter and DMZ boundaries.`,
+      evidence: `Source: ${srcIp}, destinations: ${dstList}, packets: ${data.count}, port: 3622`,
+      affectedIp: srcIp,
+      category: FindingCategory.OTICS,
+      timestamp: 0,
     });
   }
 

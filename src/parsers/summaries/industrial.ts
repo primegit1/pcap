@@ -739,3 +739,22 @@ export function summarizeProfinet(payload: ArrayBuffer): string {
   else desc = "RTA Data";
   return `${desc} (FrameID=0x${frameId.toString(16).padStart(4, "0")})`;
 }
+
+/**
+ * Summarize Foundation Fieldbus LAN Redundancy (FF-LR) payload on port 3622.
+ */
+export function summarizeFFLR(payload: ArrayBuffer): string {
+  if (payload.byteLength === 0) return "FF-LR Heartbeat/Sync";
+  if (payload.byteLength < 4) return `FF-LR (${payload.byteLength} bytes)`;
+  const view = new Uint8Array(payload);
+  const msgType = view[0];
+  const typeMap: Record<number, string> = {
+    0x01: "Heartbeat",
+    0x02: "Status Query",
+    0x03: "Status Response",
+    0x04: "Failover Trigger",
+    0x05: "Sync State",
+  };
+  const typeDesc = typeMap[msgType] ? ` (${typeMap[msgType]})` : "";
+  return `FF-LR Redundancy Msg${typeDesc} [${payload.byteLength} bytes]`;
+}

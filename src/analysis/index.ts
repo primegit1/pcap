@@ -38,6 +38,7 @@ import {
   detectBACnetTraffic,
   detectProfinetTraffic,
   detectOTOverInternet,
+  detectFFLRExposure,
 } from "./security-rules/ot-ics";
 import {
   detectIGMPFlood,
@@ -325,6 +326,7 @@ export function runAllRules(
     ["GE SRTP traffic", detectGeSRTPTraffic, (i) => i.byProtocol.get(Protocol.GeSRTP) ?? []],
     ["Niagara Fox traffic", detectNiagaraFoxTraffic, (i) => i.byProtocol.get(Protocol.NiagaraFox) ?? []],
     ["HART-IP traffic", detectHARTIPTraffic, (i) => i.byProtocol.get(Protocol.HARTIP) ?? []],
+    ["FF-LR redundancy traffic", detectFFLRExposure, (i) => i.byProtocol.get(Protocol.FFLR) ?? []],
     // ── Routing protocols ──
     ["RIP traffic", detectRIPTraffic, (i) => i.byProtocol.get(Protocol.RIP) ?? []],
     ["HSRP traffic", detectHSRPTraffic, (i) => i.byProtocol.get(Protocol.HSRP) ?? []],

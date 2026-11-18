@@ -117,6 +117,7 @@ export const PORT_PROTOCOL_MAP: Record<number, Protocol> = {
   1911: Protocol.NiagaraFox,
   4911: Protocol.NiagaraFox,
   5094: Protocol.HARTIP,
+  3622: Protocol.FFLR,
   // Tunneling
   4789: Protocol.VXLAN,
   // Windows
