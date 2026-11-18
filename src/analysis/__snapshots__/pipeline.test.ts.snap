@@ -4,8 +4,11 @@ exports[`findings model > keeps the bundled-capture findings stable (regression)
 [
   "Critical|Kubernetes API Traffic Detected — Verify Authentication|2001:db8::b:1",
   "Critical|UPnP Internet Gateway Device (IGD) Exposed|192.168.1.100",
+  "High|FOUNDATION Fieldbus LAN Redundancy (FF-LR) Traffic Detected|10.0.0.1",
+  "High|FOUNDATION Fieldbus LAN Redundancy (FF-LR) Traffic Detected|192.168.1.100",
   "High|Suspicious HTTP User-Agent: SQLMap SQL injection tool|192.168.1.100",
   "High|Suspicious HTTP User-Agent: curl (command-line HTTP client)|192.168.1.100",
+  "Info|FF-LR Communication Detected|10.0.0.1",
   "Info|SSH Server Detected|10.0.0.1",
 ]
 `;

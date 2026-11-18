@@ -234,7 +234,7 @@ export const Protocol = {
   GeSRTP: "GE SRTP",
   NiagaraFox: "Niagara Fox",
   HARTIP: "HART-IP",
-  FFLR: "FF-LR (Fieldbus LAN Redundancy)",
+  FFLR: "FF-LR",
   // Network layer
   ICMP: "ICMP",
   IGMP: "IGMP",

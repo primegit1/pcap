@@ -569,6 +569,15 @@ byebye_notify = (
 packets.append(ssdp_pkt(ts // 1_000_000, ts % 1_000_000, MAC_SRC, MAC_DST,
                          IP_SRC, SSDP_MULTICAST, byebye_notify))
 
+# 33. FF-LR — FOUNDATION Fieldbus LAN Redundancy packets (port 3622)
+ts += 500
+fflr_diag = bytes([0x01, 0x00, 0x04, 0x00, 0x00, 0x01, 0x00, 0x00])
+packets.append(udp_pkt(ts // 1_000_000, ts % 1_000_000, MAC_SRC, MAC_DST,
+                         IP_SRC, IP_DST1, 3622, 3622, fflr_diag))
+ts += 200
+packets.append(udp_pkt(ts // 1_000_000, ts % 1_000_000, MAC_DST, MAC_SRC,
+                         IP_DST1, IP_SRC, 3622, 3622, bytes([0x03, 0x00, 0x00, 0x00])))
+
 # ═════════════════════════════════════════════════════════════════════════
 #  Write PCAP
 # ═════════════════════════════════════════════════════════════════════════
@@ -578,4 +587,7 @@ os.makedirs("public", exist_ok=True)
 data = pcap_hdr + b"".join(packets)
 with open(out_path, "wb") as f:
     f.write(data)
+import base64
+with open("public/test-traffic.pcap.b64", "w") as f:
+    f.write(base64.b64encode(data).decode("ascii"))
 print(f"Generated {len(packets)} packets -> {out_path} ({len(data) / 1024:.1f} KB)")
